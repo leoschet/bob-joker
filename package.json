@@ -1,0 +1,23 @@
+{
+  "name": "bob-joker",
+  "version": "1.0.0",
+  "description": "Chatbot developed for the selective process of TheVentury",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leoschet/bob-joker.git"
+  },
+  "author": "leoschet @ github",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leoschet/bob-joker/issues"
+  },
+  "homepage": "https://github.com/leoschet/bob-joker#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
