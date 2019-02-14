@@ -1,22 +1,38 @@
+'use strict';
 
+const handler = require('./handler');
 
 function post(req, res) {  
 
     // Body contains all messages received
     let body = req.body;
-  
+
     // Checks this is an event from a page subscription
     if (body.object === 'page') {
-  
+
         // Iterates over each entry - there may be multiple if batched
-        body.entry.forEach(function(entry) {
-  
-            // Gets the message. entry.messaging is an array, but 
-            // will only ever contain one message, so we get index 0
-            let message = entry.messaging[0];
-            console.log(message);
+        body.entry.forEach(function (entry) {
+
+            // Gets the message event. entry.messaging is an array, but 
+            // will only ever contain one message event, so we get index 0
+            let event = entry.messaging[0];
+
+            // Get the sender PSID
+            let uid = event.sender.id;
+
+            let message;
+
+            // Both messages and postbacks are handled the same way
+            // this is done to ensure that the bot can chat
+            if (event.message) {
+                message = event.message;
+            } else if (event.postback) {
+                message = event.postback;
+            }
+
+            handler.handleMessage(uid, message);
         });
-  
+
         // Respond the request
         res.status(200).send('EVENT_RECEIVED');
     } else {
@@ -40,14 +56,14 @@ function get(req, res) {
 
     // Checks if a token and mode is in the query string of the request
     if (mode && token) {
-    
+
         // Checks the mode and token sent is correct
         if (mode === 'subscribe' && token === process.env.VERIFY_TOKEN) {
-        
+
             // Responds with the challenge token from the request
             console.log('WEBHOOK_VERIFIED');
             res.status(200).send(challenge);
-        
+
         } else {
             // Verify tokens does not match
             res.sendStatus(403);      
@@ -56,5 +72,6 @@ function get(req, res) {
 }
 
 module.exports = {
-    get, post
+    get,
+    post
 };
