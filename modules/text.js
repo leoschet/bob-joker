@@ -1,3 +1,5 @@
+// 'use strict';
+
 // Import dependencies
 const
     synonyms = require('./vocabulary/synonyms'),
@@ -207,30 +209,29 @@ function _lemmatize(tokens) {
     return lemmatized_tokens
 }
 
-function _extract(lemmatized_tokens) {
-    // This function uses the TRIE structure to find written entities
-    // An entity is only considered as found/written, if they are complete
-    // If entities are overlapped, only the biggest is considered complete (FOR NOW)
+function _buildInvertedIndex(lemmatized_tokens, verbose = 0) {
 
-    // console.log('\ntokens_pool: ' + tokens_pool)
-
-    // Create an positional inverted index to help the message processing
     let inverted_index = {}
+    
+    // Create an positional inverted index to help the message processing
     for (let index = 0; index < lemmatized_tokens.length; index++) {
         
         let token = lemmatized_tokens[index];
 
-        // console.log('\nCurrent token for inverted index creation: ' + token)
+        if (verbose)
+        console.log('\nCurrent token for inverted index creation: ' + token)
         
         // Check if token is useful
         if (tokens_pool.indexOf(token) > -1) {
-
-            // console.log('token inside pool!!')
+            
+            if (verbose)
+                console.log('\ttoken inside pool!!')
 
             // Adds to inverted index
             if (!(token in inverted_index)) {
 
-                // console.log('token not in inverted index!!!')
+                if (verbose)
+                    console.log('\ttoken not in inverted index!!!')
 
                 inverted_index[token] = []
             }
@@ -239,7 +240,13 @@ function _extract(lemmatized_tokens) {
         }
     }
 
-    // console.log('inverted_index: ' + JSON.stringify(inverted_index))
+    if (verbose)
+        console.log('inverted_index: ' + JSON.stringify(inverted_index))
+
+    return inverted_index
+}
+
+function _extractEntities(inverted_index, tokens_amount, verbose = 0) {
 
     // Create a dictionary that maps extracted entities to their ranges
     let extracted_entities = {}
@@ -250,15 +257,17 @@ function _extract(lemmatized_tokens) {
         // Get all surfaces for current entity
         entity_surfaces = entities_pool[code].surfaces
 
-        // console.log('\nCurrent code being analysed: ' + code)
+        if (verbose)
+            console.log('\nCurrent code being analysed: ' + code)
         
         // For every surface, checks if its tokens are not too far apart
         for (let surface_index = 0; surface_index < entity_surfaces.length; surface_index++) {
-
+            
             // Collect all tokens for current surface
             let surface_tokens = entity_surfaces[surface_index];
             
-            // console.log('\tCurrent SURFACE being analysed: ' + surface_tokens)
+            if (verbose)
+                console.log('\tCurrent SURFACE being analysed: ' + surface_tokens)
             
             // This array defines the positions allowed for tokens of the same surface
             let entity_range = []
@@ -269,12 +278,14 @@ function _extract(lemmatized_tokens) {
                 // Get current token
                 let token = surface_tokens[token_index];
                 
-                // console.log('\t\tCurrent TOKEN being analysed: ' + token)
+                if (verbose)
+                    console.log('\t\tCurrent TOKEN being analysed: ' + token)
                 
                 // Current token can lead to valid entity, 
                 if (token in inverted_index) {
 
-                    // console.log('\t\tToken is in message!!')
+                    if (verbose)
+                        console.log('\t\tToken is in message!!')
                     
                     let token_range = []
                     
@@ -309,22 +320,25 @@ function _extract(lemmatized_tokens) {
                         }
                     });
 
-                    // console.log('\t\tToken range: ' + token_range)
+                    if (verbose)
+                        console.log('\t\tToken range: ' + token_range)
                     
                     // Update entity range using current boundaries
                     entity_range = token_range.map(([_, start, end]) => {
                         // Fix start and end positions, to prevent out of bounds
                         let inbound_start = (start < 0) ? 0 : start
-                        let inbound_end = (end > lemmatized_tokens.length) ? lemmatized_tokens.length : end
+                        let inbound_end = (end > tokens_amount) ? tokens_amount : end
 
                         return [start, end, inbound_start, inbound_end]
                     });
                     
-                    // console.log('\tCurrent entity_range: ' + entity_range)
+                    if (verbose)
+                        console.log('\tCurrent entity_range: ' + entity_range)
 
                 } else {
 
-                    // console.log('\t\tToken not in message :(')
+                    if (verbose)
+                        console.log('\t\tToken not in message :(')
                     
                     // Sice current token is not in text, this surface cannot lead to a valid entity
                     entity_range = []
@@ -343,20 +357,85 @@ function _extract(lemmatized_tokens) {
                 
                 // Save entity boundaries, does this for every surface
                 extracted_entities[code] = extracted_entities[code].concat(entity_range)
-                
-                // console.log('\tCurrent entity is valid!! Extracted entities: ' + extracted_entities)
+
+                if (verbose)
+                    console.log('\tCurrent entity is valid!! Extracted entities: ' + extracted_entities)
             }
         }
     }
-    
-    // console.log('\n\t Final extracted entities: ' + JSON.stringify(extracted_entities))
-    
+
+    if (verbose)
+        console.log('\n\t Final extracted entities: ' + JSON.stringify(extracted_entities))
+
+    return extracted_entities;
+}
+
+// Auxiliary function for extract method
+function _bindEntity(extracted_entities, base_code, related_code, remove_related, bind_callback) {
+
+    // Current related entity was extracted
+    if (related_code in extracted_entities) {
+
+        // Infer related entity position
+        let related_positions = extracted_entities[related_code].map(([_1, _2, inbound_start, inbound_end]) => {
+            return inbound_start + inbound_end/2
+        })
+
+        // console.log('\t\tAnalysing possible related: ' + related_code)
+
+        let valid_relation = false
+        extracted_entities[base_code].some(([start, end, _1, _2]) => {
+
+            // Related entities, most of the times, will come after (or during) the base entity
+            // e.g.: can you tell me about chuck norris? -> action.knowledge + target.chuck_norris
+            start += MAX_BACKWARD_DISTANCE
+
+            // console.log('\t\t\tStart: ' + start)
+            // console.log('\t\t\tEnd: ' + end)
+
+            // Tries to validate current entity with all possible related
+            for (let index = 0; index < related_positions.length; index++) {
+                let position = related_positions[index];
+
+                // console.log('\t\t\tPositioning: ' + position)
+
+                if (position >= start && position <= end) {
+
+
+                    // TODO: Add cardinality parameter for every entity relation
+
+                    if (remove_related) {
+                        // Remove used required entity from extracted_entities
+                        extracted_entities[related_code].splice(index, 1)
+                    }
+
+                    // Validate relation
+                    valid_relation = true
+
+                    bind_callback()
+                }
+                
+                if (valid_relation) {
+                    break
+                }
+            }
+            
+
+            // Break `some` loop as soon as relation is validated
+            // return valid_relation
+        })
+    }
+}
+
+function _buildContexts(extracted_entities, verbose = 0) {
+
     let contexts = []
     
     // Filter extracted entities by required and optional information to create contexts
     for (code in extracted_entities) {
         
-        // console.log('\nCode being analysed for required and optional: ' + code)
+        if (verbose)
+            console.log('\nCode being analysed for required and optional: ' + code)
         
         let context_codes = []
         
@@ -365,7 +444,8 @@ function _extract(lemmatized_tokens) {
             // NOTE: For now, requireds are not being used. Because if an action has requirements,
             //       when they are not met, the action is ignored
 
-            // console.log('\tThere are possible requireds!!')
+            if (verbose)
+                console.log('\tThere are possible requireds!!')
             
             // Filter by required
             entities_pool[code].required.forEach((required_entity_code) => {
@@ -373,7 +453,8 @@ function _extract(lemmatized_tokens) {
                 // Tries to relate entities and its required
                 _bindEntity(extracted_entities, code, required_entity_code, true, () => {
 
-                    // console.log('\t\tValid relation with: ' + required_entity_code)
+                    if (verbose)
+                        console.log('\t\tValid relation with: ' + required_entity_code)
                     
                     // Save valid codes for current context
                     // Each required creates a new context
@@ -382,17 +463,20 @@ function _extract(lemmatized_tokens) {
             });
         } else {
             
-            // console.log('\tThere are no need for requirements!!')
+            if (verbose)
+                console.log('\tThere are no need for requirements!!')
             
             // There are no requirements
             context_codes.push([code])
         }
 
-        // console.log('\tCurrent context codes: ' + context_codes)
+        if (verbose)
+            console.log('\tCurrent context codes: ' + context_codes)
         
         if (entities_pool[code].optional.length) {
             
-            // console.log('\nThere are possible optional!!')
+            if (verbose)
+                console.log('\nThere are possible optional!!')
             
             // Check for optionals
             entities_pool[code].optional.forEach((optional_entity_code) => {
@@ -400,7 +484,8 @@ function _extract(lemmatized_tokens) {
                 // Tries to relate entities and its optional
                 _bindEntity(extracted_entities, code, optional_entity_code, true, () => {
                     
-                    // console.log('\t\tValid relation with: ' + optional_entity_code)
+                    if (verbose)
+                        console.log('\t\tValid relation with: ' + optional_entity_code)
 
                     // Save valid codes for current context
                     // Each required creates a new context
@@ -410,7 +495,8 @@ function _extract(lemmatized_tokens) {
             });
         }
 
-        // console.log('\nextracted context_codes: ' + context_codes)
+        if (verbose)
+            console.log('\nextracted context_codes: ' + context_codes)
 
         context_codes.forEach((codes) => {
             
@@ -422,7 +508,8 @@ function _extract(lemmatized_tokens) {
             for (let index = 0; index < codes.length; index++) {
                 let context_code = codes[index];
 
-                // console.log('context_code: ' + codes)
+                if (verbose)
+                    console.log('context_code: ' + codes)
 
                 if (context_code.includes('action')) {
                     actions.push(context_code)
@@ -485,65 +572,22 @@ function _extract(lemmatized_tokens) {
         }); 
     }
 
-    // Returns an array with all extracted contexts.
     return contexts
 }
 
-// Auxiliary function for extract method
-function _bindEntity(extracted_entities, base_code, related_code, remove_related, bind_callback) {
+function _extract(lemmatized_tokens, verbose = 0) {
+    // This function uses the TRIE structure to find written entities
+    // An entity is only considered as found/written, if they are complete
+    // If entities are overlapped, only the biggest is considered complete (FOR NOW)
 
-    // Current related entity was extracted
-    if (related_code in extracted_entities) {
+    let inverted_index = _buildInvertedIndex(lemmatized_tokens, verbose)
 
-        // Infer related entity position
-        let related_positions = extracted_entities[related_code].map(([_1, _2, inbound_start, inbound_end]) => {
-            return inbound_start + inbound_end/2
-        })
+    let extracted_entities = _extractEntities(inverted_index, lemmatized_tokens.length, verbose)
 
-        // console.log('\t\tAnalysing possible related: ' + related_code)
-
-        let valid_relation = false
-        extracted_entities[base_code].some(([start, end, _1, _2]) => {
-
-            // Related entities, most of the times, will come after (or during) the base entity
-            // e.g.: can you tell me about chuck norris? -> action.knowledge + target.chuck_norris
-            start += MAX_BACKWARD_DISTANCE
-
-            // console.log('\t\t\tStart: ' + start)
-            // console.log('\t\t\tEnd: ' + end)
-
-            // Tries to validate current entity with all possible related
-            for (let index = 0; index < related_positions.length; index++) {
-                let position = related_positions[index];
-
-                // console.log('\t\t\tPositioning: ' + position)
-
-                if (position >= start && position <= end) {
-
-
-                    // TODO: Add cardinality parameter for every entity relation
-
-                    if (remove_related) {
-                        // Remove used required entity from extracted_entities
-                        extracted_entities[related_code].splice(index, 1)
-                    }
-
-                    // Validate relation
-                    valid_relation = true
-
-                    bind_callback()
-                }
-                
-                if (valid_relation) {
-                    break
-                }
-            }
-            
-
-            // Break `some` loop as soon as relation is validated
-            // return valid_relation
-        })
-    }
+    let contexts = _buildContexts(extracted_entities)
+    
+    // Returns an array with all extracted contexts.
+    return contexts
 }
 
 function pipeline(raw_text) {

@@ -4,8 +4,8 @@ module.exports = [
         surfaces: ['hi']
     },
     {
-        code: 'functions',
-        surfaces: ['can do'],
+        code: 'functionality',
+        surfaces: ['can do', 'to_be purpose'],
         optional: ['target_bot', 'target_chuck_norris']
     },
     {
@@ -26,5 +26,9 @@ module.exports = [
     {
         code: 'repeat',
         surfaces: ['repeat']
+    },
+    {
+        code: 'reset',
+        surfaces: ['reset']
     }
 ];

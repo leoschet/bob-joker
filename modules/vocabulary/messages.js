@@ -9,7 +9,7 @@ module.exports = {
             ['Hi'],
         ]
     },
-    action_functions: {
+    action_functionality: {
         general: [
             ['Be specific, I do not have all day. Rephrase and ask what I or Chuck Norris can do!'],
             ['I understand you want to know what \'someone\' can do... Please rephrase it specifying who is this \'someone\'']
@@ -30,16 +30,14 @@ module.exports = {
             ['I\'m not sure, last time I checked he could do any thing. But I still have some doubts']
         ]
     },
-    action_help: {
-        target_bot: [
-            ['Are you stuck? You can always ask me for a joke, a curiosity or when is the next show at the best comedy house in town: Comedians Club'],
+    action_help: [
+            ['So, you can always ask me for a joke, a curiosity or when is the next show at the best comedy house in town: Comedians Club'],
             [
                 'Here is the deal, I can tell you the second best jokes ever',
                 'Second best because the best you\'re only going to hear at the Comedians Club!',
                 'I also know some curiosities about me and my dad (Chuck Norris)'
             ]
-        ]
-    },
+    ],
     action_knowledge: {
         general: [
             ['Hmm, I am a fraud, to be honest I only know my and Chuck Norris\' age and height...', 'Besides that, I know when is the next show at the Comedians Club'],
@@ -84,6 +82,22 @@ module.exports = {
         limit: [
             ['Well buddy, I cannot tell you more jokes today... If you still want more you can go to the Comedians Club tonight!'],
             ['Ok, enough for today, come back tomorrow and I will tell more jokes.', 'If you want more you should go to the Comedians Club! tonight'],
+            ['Nah...', 'I am tired right now, come back in 24h and I will tell you more jokes.']
+        ],
+        error: [
+            ['Er... er... I cannot remember any funny joke right now, you should try again later!'],
+            ['Whoops, gotta go to the Comedians Club right now, you should meet me there!', 'You can ask for a joke here later.']
         ]
-    }
+    },
+    action_reset: [
+        ['Oh no, please don\'t!', 'What are you doing? Why are you erasing my memory, nooooooooooooooo...'],
+        ['Oh dear, why are you erasing my memory?!', 'Ok, it is too late now, I just want you to know that...']
+    ],
+    action_repeat: [
+        ['I understand you want me to do something again', 'The problem is, I do not know what \'something\' is!']
+    ],
+    puzzling: [
+        ['Well, I... I do not know what to say... I am afraid that I am getting to old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
+        ['What you wrote looks like gibberish to me, maybe you can rephrase it and send it again!']
+    ]
 }

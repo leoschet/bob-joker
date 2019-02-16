@@ -26,5 +26,9 @@ module.exports = [
     {
         lemma: 'fact',
         surfaces: ['curiosity']
+    },
+    {
+        lemma: 'reset',
+        surfaces: ['reset', 'start over']
     }
 ];

@@ -10,5 +10,9 @@ module.exports = [
     {
         code: 'chuck_norris',
         surfaces: ['chuck', 'norris', 'mith', 'actor', 'god', 'legend']
+    },
+    {
+        code: 'repeat',
+        surfaces: ['he', 'she', 'him', 'her', 'his', 'hers']
     }
 ];
