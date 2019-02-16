@@ -18,7 +18,9 @@
   "homepage": "https://github.com/leoschet/bob-joker#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cron": "^1.6.0",
     "express": "^4.16.4",
-    "jslint": "^0.12.1"
+    "jslint": "^0.12.1",
+    "request": "^2.88.0"
   }
 }
