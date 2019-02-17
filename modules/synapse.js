@@ -18,8 +18,11 @@ function _updateUserSession(uid, action, update_data) {
         update_data = {};
     }
 
-    // Merge executed action into data to update
-    update_data.last_action = action;
+    if (action !== false) {
+        // Merge executed action into data to update
+        update_data.last_action = action;
+    }
+
     sessions.setProperty(uid, update_data);
 }
 
@@ -78,7 +81,7 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
     } else if (action === 'action_functionality') {
 
         // User asked about the functionality of something
-        answer = functionality(targets, (update_data) => {
+        answers = functionality(targets, (update_data) => {
             _updateUserSession(session.uid, action, update_data);
         });
 
@@ -91,26 +94,30 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
 
     } else if (action === 'action_knowledge') {
 
-        answer = knowledge(targets, infos, (update_data) => {
+        answers = knowledge(targets, infos, (update_data) => {
             _updateUserSession(session.uid, action, update_data);
         });
 
     } else if (action === 'action_tell_joke') {
 
-        answers = jokes(session, (update_data) => {
-            _updateUserSession(session.uid, action, update_data);
+        answers = jokes(session, (update_data, update_action) => {
+            _updateUserSession(
+                session.uid,
+                (update_action === false) ? false : action,
+                update_data
+            );
         });
 
     } else if (action === 'action_repeat') {
 
         answers = repeat((update_data) => {
-            // Set action as undefined (default value)
-            _updateUserSession(session.uid, undefined, update_data);
+            // Set action to false so it is not updated
+            _updateUserSession(session.uid, false, update_data);
         });
 
     } else if (action === 'action_reset') {
 
-        answers = reset((update_data) => {
+        answers = reset(session, (update_data) => {
             // Set action as undefined (default value)
             _updateUserSession(session.uid, undefined, update_data);
         });
@@ -118,13 +125,14 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
     } else {
 
         answers = puzzling((update_data) => {
-            // Set action as undefined (default value)
-            _updateUserSession(session.uid, undefined, update_data);
+            // Set action to false so it is not updated
+            _updateUserSession(session.uid, false, update_data);
         });
 
     }
 
-    return answers
+    // Answers is either an array or a promise
+    return answers;
 }
 
 function interpretContext(session, context, contexts_amount) {
