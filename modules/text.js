@@ -594,6 +594,15 @@ function pipeline(raw_text) {
     let tokens = _tokenize(raw_text)
     let lemmas = _lemmatize(tokens)
     let contexts = _extract(lemmas)
+    
+    if (contexts.length === 0) {
+        contexts.push({
+            actions: [],
+            targets: [],
+            infos: [],
+            emotions: []
+        });
+    }
 
     return contexts
 }
