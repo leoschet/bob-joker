@@ -20,19 +20,14 @@ function post(req, res) {
             // Get the sender PSID
             let uid = event.sender.id;
 
-            console.log('event')
-            console.log(event)
-            console.log('uid')
-            console.log(uid)
-
             let message;
 
             // Both messages and postbacks are handled the same way
             // this is done to ensure that the bot can chat
             if (event.message) {
-                message = event.message;
+                message = event.message.text;
             } else if (event.postback) {
-                message = event.postback;
+                message = event.postback.payload;
             }
 
             if (message) {
