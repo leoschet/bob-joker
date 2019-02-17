@@ -17,7 +17,7 @@ function _getBaseOptions(uid) {
     };
 }
 
-function _sender_action(uid, sender_action) {
+function _sender_action(uid, sender_action, callback) {
     // Create options object
     let options = _getBaseOptions(uid);
     options.json.sender_action = sender_action;
@@ -32,16 +32,20 @@ function _sender_action(uid, sender_action) {
             console.error('Error: ', response.body.error);
         } else {
             console.log('Sender action ' + sender_action + 'executed for user: ' + uid);
+
+            if (callback) {
+                callback()
+            }
         }
     });
 }
 
-function startTyping(uid) {
-    _sender_action(uid, 'typing_on');
+function startTyping(uid, callback) {
+    _sender_action(uid, 'typing_on', callback);
 }
 
-function stopTyping(uid) {
-    _sender_action(uid, 'typing_on');
+function stopTyping(uid, callback) {
+    _sender_action(uid, 'typing_on', callback);
 }
 
 function syncText(uid, messages, callback, index = 0) {
