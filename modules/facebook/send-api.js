@@ -7,7 +7,7 @@ function syncText(uid, messages, index = 0) {
     if (index < messages.length) {
 
         let options = {
-            url: 'https://graph.facebook.com/v2.6/me/messages',
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
             method: 'POST',
             json: {
                 messaging_type: 'RESPONSE',
@@ -23,6 +23,8 @@ function syncText(uid, messages, index = 0) {
             }
         };
 
+        console.log(options)
+
         // Send current message
         request(options, function (error, response, body) {
             if (error) {
@@ -32,6 +34,7 @@ function syncText(uid, messages, index = 0) {
                 // Some error occured
                 console.error('Error: ', response.body.error);
             } else {
+                console.log('Message sent!')
                 // Send next message
                 syncText(uid, messages, index + 1);
             }
