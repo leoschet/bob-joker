@@ -1,7 +1,7 @@
 module.exports = [
     {
         code: 'laugh',
-        surfaces: ['lol', 'haha', 'h?(a{1,2}h{1,2})+a?']
+        surfaces: ['lol']
     },
     {
         code: 'happy',

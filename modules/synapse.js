@@ -9,6 +9,9 @@ const
     jokes = require('./features/jokes'),
     repeat = require('./features/repeat'),
     reset = require('./features/reset'),
+    emotion_laugh = require('./features/laugh-emotion'),
+    emotion_happy = require('./features/happy-emotion'),
+    emotion_sad = require('./features/bad-emotion'),
     puzzling = require('./features/puzzling');
 
 function _updateUserSession(uid, action, update_data) {
@@ -124,7 +127,7 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
 
     } else {
 
-        answers = puzzling((update_data) => {
+        answers = puzzling.action((update_data) => {
             // Set action to false so it is not updated
             _updateUserSession(session.uid, false, update_data);
         });
@@ -133,6 +136,26 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
 
     // Answers is either an array or a promise
     return answers;
+}
+
+function interpretEmotions(emotions) {
+    let answers;
+
+    if (emotions.length > 1) {
+        answers = puzzling.emotion();
+    } else {
+        let emotion = emotions[0]
+
+        if (emotion === 'emotion_laugh') {
+            answers = emotion_laugh()
+        } else if (emotion === 'emotion_happy') {
+            answers = emotion_happy()
+        } else if (emotion === 'emotion_sad') {
+            answers = emotion_sad()
+        }
+    }
+
+    return answers
 }
 
 function interpretContext(session, context, contexts_amount) {
@@ -154,9 +177,9 @@ function interpretContext(session, context, contexts_amount) {
         // When no action is found, search for additional information, such as
         // emotions, infos, targets...
         if (context.emotions) {
-            // TODO
+            answers = interpretEmotions(context.emotions)
         } else {
-            answers = puzzling((update_data) => {
+            answers = puzzling.action((update_data) => {
                 // Set action as undefined (default value)
                 _updateUserSession(session.uid, undefined, update_data);
             });

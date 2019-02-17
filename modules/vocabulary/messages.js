@@ -96,8 +96,26 @@ module.exports = {
     action_repeat: [
         ['I understand you want me to do something again', 'The problem is, I do not know what \'something\' is!']
     ],
-    puzzling: [
-        ['Well, I... I do not know what to say... I am afraid that I am getting to old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
-        ['What you wrote looks like gibberish to me, maybe you can rephrase it and send it again!']
+    puzzling: {
+        action: [
+            ['Well, I... I do not know what to say... I am afraid that I am getting to old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
+            ['What you wrote looks like gibberish to me, maybe you can rephrase it and send it again!']
+        ],
+        emotion: [
+            ['You are sending me mixed signals, I can not understand if you are happy or sad...'],
+            ['Try to be assertive, are you happy or sad?']
+        ]
+    },
+    good_emotion: [
+        [':)'],
+        [':D']
+    ],
+    bad_emotion: [
+        [':('],
+        [':\'(']
+    ],
+    laugh_emotion: [
+        ['Glad you liked it!'],
+        [';)']
     ]
 }
