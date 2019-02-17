@@ -6,7 +6,7 @@ module.exports = [
     {
         code: 'happy',
         surfaces: ['nice', 'good', 'great', 'awesome', 'bravo', 'brilliant',
-                'fantastic', 'happy', 'genius', 'happy', 'like', 'alright', 'ok',
+                'fantastic', 'happy', 'genius', 'like', 'alright', 'ok', 'okay',
                 'sure', 'funny']
     },
     {
