@@ -30,9 +30,7 @@ function handleMessage(uid, message) {
             messages = [].concat.apply([], messages)
 
             console.log(messages)
-            sender.syncText(uid, messages, () => {
-                sender.stopTyping(uid);
-            })
+            sender.syncText(uid, messages)
         });
     });
 

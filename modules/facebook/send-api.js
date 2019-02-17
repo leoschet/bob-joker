@@ -77,13 +77,17 @@ function syncText(uid, messages, callback, index = 0) {
                     }, 750);
                 } else {
                     // All messages were sent
-                    callback();
+                    if (callback) {
+                        callback();
+                    }
                 }
             }
         });
     } else {
         // Code only gets here if no message was received
-        callback();
+        if (callback) {
+            callback();
+        }
     }
 }
 
