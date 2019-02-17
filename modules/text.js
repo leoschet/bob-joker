@@ -76,7 +76,8 @@ function _processEntities(entities, entity_type) {
             entities_pool[entity_code] = {
                 surfaces: ('surfaces' in entity ? lemmatized_surfaces : []),
                 required: ('required' in entity ? entity['required'] : []),
-                optional: ('optional' in entity ? entity['optional'] : [])
+                optional: ('optional' in entity ? entity['optional'] : []),
+                transform: ('transform' in entity ? entity['transform'] : [])
             }
         } else {
             throw {
@@ -411,7 +412,7 @@ function _bindEntity(extracted_entities, base_code, related_code, remove_related
                         // Remove used required entity from extracted_entities
                         extracted_entities[related_code].splice(index, 1)
                     }
-
+                    
                     // Validate relation
                     valid_relation = true
 
@@ -434,7 +435,7 @@ function _buildContexts(extracted_entities, verbose = 0) {
 
     let contexts = []
     
-    // Filter extracted entities by required and optional information to create contexts
+    // Filter extracted entities by required, optional and transform information to create contexts
     for (code in extracted_entities) {
         
         if (verbose)
@@ -490,9 +491,33 @@ function _buildContexts(extracted_entities, verbose = 0) {
                         console.log('\t\tValid relation with: ' + optional_entity_code)
 
                     // Save valid codes for current context
-                    // Each required creates a new context
+                    // Each optional creates a new context
                     context_codes.push([code, optional_entity_code])
-                },verbose)
+                }, verbose)
+    
+            });
+        }
+
+        if (entities_pool[code].transform.length) {
+            
+            if (verbose)
+                console.log('\nThere are possible transformers!!')
+
+            // Check for transformers
+            entities_pool[code].transform.forEach((transform_entity_code) => {
+
+                // Tries to relate entities and its transform
+                _bindEntity(extracted_entities, code, transform_entity_code, false, () => {
+                    
+                    has_relation = true;
+
+                    if (verbose)
+                        console.log('\t\tValid relation with: ' + transform_entity_code)
+
+                    // Save valid codes for current context
+                    // Transformers ignore base code creates a new context
+                    context_codes.push([transform_entity_code])
+                }, verbose)
     
             });
         }

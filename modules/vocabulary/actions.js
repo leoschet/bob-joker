@@ -14,8 +14,9 @@ module.exports = [
     },
     {
         code: 'knowledge',
-        surfaces: ['know about', 'fact', 'tell something', 'tell the', 'tell about', 'what to_be', 'when to_be', 'to_be?'],
-        optional: ['target_bot', 'target_chuck_norris', 'target_comedians_club', 'target_repeat', 'info_age', 'info_height']
+        surfaces: ['know about', 'fact', 'tell me', 'tell something', 'tell the', 'tell about', 'what to_be', 'when to_be', 'to_be?'],
+        optional: ['target_bot', 'target_chuck_norris', 'target_comedians_club', 'target_repeat', 'info_age', 'info_height'],
+        transform: ['action_tell_joke']
     },
     {
         code: 'tell_joke',

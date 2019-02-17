@@ -18,6 +18,8 @@ function _getBaseOptions(uid) {
 }
 
 function _sender_action(uid, sender_action, callback) {
+    callback()
+    return
     // Create options object
     let options = _getBaseOptions(uid);
     options.json.sender_action = sender_action;
