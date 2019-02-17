@@ -78,7 +78,11 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
         // ask if the user need any help.
         if (contexts_amount === 1) {
             // Does not update session.last_action
-            answers = answers.concat(help());
+            answers = answers.concat(
+                help((update_data) => {
+                    _updateUserSession(session.uid, false, update_data);
+                })
+            );
         }
 
     } else if (action === 'action_functionality') {

@@ -11,7 +11,9 @@ module.exports = function (updateUserSession) {
     answers = util.getRandomAnswer(messages.action_help);
 
     if (updateUserSession) {
-        updateUserSession();
+        updateUserSession({
+            last_target: 'target_comedians_club'
+        });
     }
 
     return answers;
