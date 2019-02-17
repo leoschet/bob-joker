@@ -438,8 +438,12 @@ function _buildContexts(extracted_entities, verbose = 0) {
             console.log('\nCode being analysed for required and optional: ' + code)
         
         let context_codes = []
-        
+
+        let has_relation = false;
+
         if (entities_pool[code].required.length) {
+
+            has_relation = true;
 
             // NOTE: For now, requireds are not being used. Because if an action has requirements,
             //       when they are not met, the action is ignored
@@ -461,13 +465,6 @@ function _buildContexts(extracted_entities, verbose = 0) {
                     context_codes.push([code, required_entity_code])
                 })
             });
-        } else {
-            
-            if (verbose)
-                console.log('\tThere are no need for requirements!!')
-            
-            // There are no requirements
-            context_codes.push([code])
         }
 
         if (verbose)
@@ -477,7 +474,9 @@ function _buildContexts(extracted_entities, verbose = 0) {
             
             if (verbose)
                 console.log('\nThere are possible optional!!')
-            
+
+            has_relation = true;
+
             // Check for optionals
             entities_pool[code].optional.forEach((optional_entity_code) => {
 
@@ -493,6 +492,14 @@ function _buildContexts(extracted_entities, verbose = 0) {
                 })
     
             });
+        }
+
+        if (!has_relation) {
+            if (verbose)
+                console.log('\tThere are no need for requirements!!')
+            
+            // There are no requirements
+            context_codes.push([code])
         }
 
         if (verbose)
@@ -548,9 +555,23 @@ function _buildContexts(extracted_entities, verbose = 0) {
                 if (can_merge) {
                     merged = true
 
-                    context.targets = context.targets.concat(targets)
-                    context.infos = context.infos.concat(infos)
-                    context.emotions = context.emotions.concat(emotions)
+                    targets.forEach((target) => {
+                        if (context.targets.indexOf(target) === -1) {
+                            context.targets.push(target)
+                        }
+                    });
+
+                    infos.forEach((info) => {
+                        if (context.infos.indexOf(info) === -1) {
+                            context.infos.push(info)
+                        }
+                    });
+
+                    emotions.forEach((emotion) => {
+                        if (context.emotions.indexOf(emotion) === -1) {
+                            context.emotions.push(emotion)
+                        }
+                    });
                 }
             });
 
@@ -584,16 +605,16 @@ function _extract(lemmatized_tokens, verbose = 0) {
 
     let extracted_entities = _extractEntities(inverted_index, lemmatized_tokens.length, verbose)
 
-    let contexts = _buildContexts(extracted_entities)
+    let contexts = _buildContexts(extracted_entities, verbose)
     
     // Returns an array with all extracted contexts.
     return contexts
 }
 
-function pipeline(raw_text) {
+function pipeline(raw_text, verbose = 0) {
     let tokens = _tokenize(raw_text)
     let lemmas = _lemmatize(tokens)
-    let contexts = _extract(lemmas)
+    let contexts = _extract(lemmas, verbose)
     
     if (contexts.length === 0) {
         contexts.push({
