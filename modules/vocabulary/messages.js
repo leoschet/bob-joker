@@ -98,7 +98,7 @@ module.exports = {
     ],
     puzzling: {
         action: [
-            ['Well, I... I do not know what to say... I am afraid that I am getting to old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
+            ['Well, I... I do not know what to say... I am afraid that I am getting to0 old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
             ['What you wrote looks like gibberish to me, maybe you can rephrase it and send it again!']
         ],
         emotion: [
