@@ -16,6 +16,9 @@ module.exports = function (targets, updateUserSession) {
         // Target what specified
         answers = util.getRandomAnswer(messages.action_functionality[target]);
 
+        // Handle questions like "when is it then?"
+        target = 'target_comedians_club';
+
     } else {
         // No target or multiple targets were given
         answers = util.getRandomAnswer(messages.action_functionality.general);
