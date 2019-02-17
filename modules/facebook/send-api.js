@@ -23,8 +23,6 @@ function syncText(uid, messages, index = 0) {
             }
         };
 
-        console.log(options)
-
         // Send current message
         request(options, function (error, response, body) {
             if (error) {
@@ -34,9 +32,12 @@ function syncText(uid, messages, index = 0) {
                 // Some error occured
                 console.error('Error: ', response.body.error);
             } else {
-                console.log('Message sent!')
-                // Send next message
-                syncText(uid, messages, index + 1);
+                console.log('Message sent!');
+
+                // Send next message with a delay of 2 seconds
+                setTimeout(() => {
+                    syncText(uid, messages, index + 1);
+                }, 2000);
             }
         });
     } else {
