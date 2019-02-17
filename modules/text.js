@@ -371,7 +371,7 @@ function _extractEntities(inverted_index, tokens_amount, verbose = 0) {
 }
 
 // Auxiliary function for extract method
-function _bindEntity(extracted_entities, base_code, related_code, remove_related, bind_callback) {
+function _bindEntity(extracted_entities, base_code, related_code, remove_related, bind_callback, verbose = 0) {
 
     // Current related entity was extracted
     if (related_code in extracted_entities) {
@@ -381,7 +381,8 @@ function _bindEntity(extracted_entities, base_code, related_code, remove_related
             return inbound_start + inbound_end/2
         })
 
-        // console.log('\t\tAnalysing possible related: ' + related_code)
+        if (verbose)
+            console.log('\t\tAnalysing possible related: ' + related_code)
 
         let valid_relation = false
         extracted_entities[base_code].some(([start, end, _1, _2]) => {
@@ -390,14 +391,16 @@ function _bindEntity(extracted_entities, base_code, related_code, remove_related
             // e.g.: can you tell me about chuck norris? -> action.knowledge + target.chuck_norris
             start += MAX_BACKWARD_DISTANCE
 
-            // console.log('\t\t\tStart: ' + start)
-            // console.log('\t\t\tEnd: ' + end)
+            if (verbose)
+                console.log('\t\t\tStart: ' + start)
+                console.log('\t\t\tEnd: ' + end)
 
             // Tries to validate current entity with all possible related
             for (let index = 0; index < related_positions.length; index++) {
                 let position = related_positions[index];
 
-                // console.log('\t\t\tPositioning: ' + position)
+                if (verbose)
+                    console.log('\t\t\tPositioning: ' + position)
 
                 if (position >= start && position <= end) {
 
@@ -443,8 +446,6 @@ function _buildContexts(extracted_entities, verbose = 0) {
 
         if (entities_pool[code].required.length) {
 
-            has_relation = true;
-
             // NOTE: For now, requireds are not being used. Because if an action has requirements,
             //       when they are not met, the action is ignored
 
@@ -457,13 +458,15 @@ function _buildContexts(extracted_entities, verbose = 0) {
                 // Tries to relate entities and its required
                 _bindEntity(extracted_entities, code, required_entity_code, true, () => {
 
+                    has_relation = true;
+
                     if (verbose)
                         console.log('\t\tValid relation with: ' + required_entity_code)
                     
                     // Save valid codes for current context
                     // Each required creates a new context
                     context_codes.push([code, required_entity_code])
-                })
+                }, verbose)
             });
         }
 
@@ -475,21 +478,21 @@ function _buildContexts(extracted_entities, verbose = 0) {
             if (verbose)
                 console.log('\nThere are possible optional!!')
 
-            has_relation = true;
-
             // Check for optionals
             entities_pool[code].optional.forEach((optional_entity_code) => {
 
                 // Tries to relate entities and its optional
                 _bindEntity(extracted_entities, code, optional_entity_code, true, () => {
                     
+                    has_relation = true;
+
                     if (verbose)
                         console.log('\t\tValid relation with: ' + optional_entity_code)
 
                     // Save valid codes for current context
                     // Each required creates a new context
                     context_codes.push([code, optional_entity_code])
-                })
+                },verbose)
     
             });
         }
