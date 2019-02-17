@@ -100,6 +100,11 @@ module.exports = {
             ['Whoops, gotta go to the Comedians Club right now, you should meet me there!', 'You can ask for a joke here later.']
         ]
     },
+    action_bye: [
+        ['See ya!'],
+        ['Ok, bye!'],
+        ['I will miss you, talk with me soon!']
+    ],
     action_reset: [
         ['Oh no, please don\'t!', 'What are you doing? Why are you erasing my memory, nooooooooooooooo...'],
         ['Oh dear, why are you erasing my memory?!', 'Ok, it is too late now, I just want you to know that...']

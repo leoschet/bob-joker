@@ -7,6 +7,7 @@ const
     help = require('./features/help'),
     knowledge = require('./features/knowledge'),
     jokes = require('./features/jokes'),
+    bye = require('./features/bye'),
     repeat = require('./features/repeat'),
     reset = require('./features/reset'),
     emotion_laugh = require('./features/laugh-emotion'),
@@ -111,6 +112,16 @@ function interpretAction(session, action, targets, infos, contexts_amount) {
             _updateUserSession(
                 session.uid,
                 (update_action === false) ? false : action,
+                update_data
+            );
+        });
+
+    } else if (action === 'action_bye') {
+
+        answers = bye(session, (update_data) => {
+            _updateUserSession(
+                session.uid,
+                undefined,
                 update_data
             );
         });

@@ -30,5 +30,9 @@ module.exports = [
     {
         code: 'reset',
         surfaces: ['reset']
+    },
+    {
+        code: 'bye',
+        surfaces: ['see you', 'bye', 'tchau']
     }
 ];
