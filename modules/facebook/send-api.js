@@ -75,7 +75,7 @@ function syncText(uid, messages, index = 0) {
                     startTyping(uid, () => {
                         // Send next message with a delay of 1.25 seconds
                         setTimeout(() => {
-                            syncText(uid, messages, callback, index + 1);
+                            syncText(uid, messages, index + 1);
                         }, 1250);
                     });
                 }
