@@ -10,7 +10,7 @@ const
     repeat = require('./features/repeat'),
     reset = require('./features/reset'),
     emotion_laugh = require('./features/laugh-emotion'),
-    emotion_happy = require('./features/happy-emotion'),
+    emotion_happy = require('./features/good-emotion'),
     emotion_sad = require('./features/bad-emotion'),
     puzzling = require('./features/puzzling');
 
