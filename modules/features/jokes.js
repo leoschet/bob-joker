@@ -13,7 +13,8 @@ module.exports = function (session, updateUserSession) {
     if (session.jokes_amount < 10) {
 
         answers = new Promise((fulfill, _) => {
-            request('http://api.icndb.com/jokes/random?limitTo=[nerdy]', function (error, response, data) {
+            // ?limitTo=[nerdy]
+            request('http://api.icndb.com/jokes/random', function (error, response, data) {
 
                 // If any data was give, parse it to access json properties
                 data = (data) ? JSON.parse(data) : undefined    
