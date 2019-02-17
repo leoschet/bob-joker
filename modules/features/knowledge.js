@@ -28,6 +28,9 @@ module.exports = function (targets, infos, updateUserSession) {
     } else {
         // No target was provided
         answers = util.getRandomAnswer(messages.action_knowledge.general);
+
+        // Handle questions like "when is it then?"
+        target = 'target_comedians_club';
     }
 
     // Prevent that last target gets erased when no target was provided

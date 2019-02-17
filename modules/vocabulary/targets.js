@@ -17,6 +17,6 @@ module.exports = [
     },
     {
         code: 'repeat',
-        surfaces: ['he', 'she', 'him', 'her', 'his', 'hers']
+        surfaces: ['he', 'she', 'him', 'her', 'his', 'hers', 'it']
     }
 ];
