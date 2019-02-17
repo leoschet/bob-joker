@@ -9,7 +9,11 @@ module.exports = [
     },
     {
         code: 'chuck_norris',
-        surfaces: ['chuck', 'norris', 'mith', 'actor', 'god', 'legend']
+        surfaces: ['chuck', 'norris', 'mith', 'actor', 'god', 'legend', 'dad']
+    },
+    {
+        code: 'comedians_club',
+        surfaces: ['comedians club', 'comedians house', 'show']
     },
     {
         code: 'repeat',

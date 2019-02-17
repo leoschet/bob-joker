@@ -40,12 +40,23 @@ module.exports = {
     ],
     action_knowledge: {
         general: [
-            ['Hmm, I am a fraud, to be honest I only know my and Chuck Norris\' age and height...', 'Besides that, I know when is the next show at the Comedians Club'],
+            ['Please, be specific, ask me for either my or Chuck Norris\' age and height...', 'Besides that, you can ask when is the next show at the Comedians Club'],
             ['I did not get it... I am only allowed to say my and Chuck\'s age and height...', 'Also I know when is the next show at the Comedians Club'],
         ],
         too_much: [
             ['Please, go easy on me, ask about one person and information at a time!']
         ],
+        target_comedians_club: {
+            general: [
+                ['Tomorrow is the next show!', 'The address is: Funny Street, number 0']
+            ],
+            info_age: [
+                ['Well, it is a new club, but a good one!']
+            ],
+            info_height: [
+                ['What kind of question is that?!']
+            ]
+        },
         target_bot: {
             general: [
                 ['Too broad, ask for my age or height and I will tell you!'],
@@ -98,7 +109,7 @@ module.exports = {
     ],
     puzzling: {
         action: [
-            ['Well, I... I do not know what to say... I am afraid that I am getting to0 old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
+            ['Well, I... I do not know what to say... I am afraid that I am getting too old...', 'Because I can not understand the slangs you used. Please rephrase you message!'],
             ['What you wrote looks like gibberish to me, maybe you can rephrase it and send it again!']
         ],
         emotion: [
