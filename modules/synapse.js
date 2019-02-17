@@ -144,14 +144,14 @@ function interpretEmotions(emotions) {
     if (emotions.length > 1) {
         answers = puzzling.emotion();
     } else {
-        let emotion = emotions[0]
+        let emotion = emotions[0];
 
         if (emotion === 'emotion_laugh') {
-            answers = emotion_laugh()
+            answers = emotion_laugh();
         } else if (emotion === 'emotion_happy') {
-            answers = emotion_happy()
+            answers = emotion_happy();
         } else if (emotion === 'emotion_sad') {
-            answers = emotion_sad()
+            answers = emotion_sad();
         }
     }
 
@@ -176,7 +176,7 @@ function interpretContext(session, context, contexts_amount) {
 
         // When no action is found, search for additional information, such as
         // emotions, infos, targets...
-        if (context.emotions) {
+        if (context.emotions.length) {
             answers = interpretEmotions(context.emotions)
         } else {
             answers = puzzling.action((update_data) => {

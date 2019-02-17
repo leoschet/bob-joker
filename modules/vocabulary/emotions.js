@@ -1,7 +1,7 @@
 module.exports = [
     {
         code: 'laugh',
-        surfaces: ['lol']
+        surfaces: ['lol', 'haha']
     },
     {
         code: 'happy',
