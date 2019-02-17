@@ -20,6 +20,11 @@ function post(req, res) {
             // Get the sender PSID
             let uid = event.sender.id;
 
+            console.log('event')
+            console.log(event)
+            console.log('uid')
+            console.log(uid)
+
             let message;
 
             // Both messages and postbacks are handled the same way
@@ -30,7 +35,9 @@ function post(req, res) {
                 message = event.postback;
             }
 
-            handler.handleMessage(uid, message);
+            if (message) {
+                handler.handleMessage(uid, message);
+            }
         });
 
         // Respond the request
