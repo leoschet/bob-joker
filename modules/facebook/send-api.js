@@ -48,7 +48,7 @@ function stopTyping(uid, callback) {
     _sender_action(uid, 'typing_on', callback);
 }
 
-function syncText(uid, messages, callback, index = 0) {
+function syncText(uid, messages, index = 0) {
 
     if (index < messages.length) {
 
@@ -83,9 +83,7 @@ function syncText(uid, messages, callback, index = 0) {
         });
     } else {
         // Code only gets here if no message was received
-        if (callback) {
-            callback();
-        }
+        return;
     }
 }
 
