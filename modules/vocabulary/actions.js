@@ -15,7 +15,7 @@ module.exports = [
     },
     {
         code: 'knowledge',
-        surfaces: ['know about', 'fact', 'tell', 'tell the', 'tell about', 'what to_be', 'when to_be', 'to_be?'],
+        surfaces: ['know about', 'fact', 'tell the', 'tell about', 'what to_be', 'when to_be', 'to_be?'],
         optional: ['target_bot', 'target_chuck_norris', 'info_age', 'info_height']
     },
     {
