@@ -4,11 +4,9 @@ const
     util = require('./util'),
     messages = require('../vocabulary/messages');
 
-module.exports = function (updateUserSession) {
+module.exports = function (session, updateUserSession) {
 
-    let answers;
-
-    answers = util.getRandomAnswer(messages.action_reset);
+    let answers = util.getRandomAnswer(messages.action_reset);
 
     if (updateUserSession) {
 
@@ -18,7 +16,7 @@ module.exports = function (updateUserSession) {
             last_target: undefined,
             last_action: undefined,
             jokes_amount: 0,
-            jokes_limit: false
+            reset_amount: session.reset_amount + 1
         });
     }
 
