@@ -14,6 +14,7 @@ function handleMessage(uid, message) {
     let session = sessions.getUserSession(uid);
 
     // Start typing
+    sender.startTyping(uid);
 
     // Process incoming message, extracting found contexts
     let contexts = text.pipeline(message);
@@ -29,7 +30,9 @@ function handleMessage(uid, message) {
         messages = [].concat.apply([], messages)
 
         console.log(messages)
-        sender.syncText(uid, messages)
+        sender.syncText(uid, messages, () => {
+            sender.stopTyping(uid);
+        })
     });
 }
 

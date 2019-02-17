@@ -2,25 +2,57 @@
 
 const request = require('request');
 
-function syncText(uid, messages, index = 0) {
+function _getBaseOptions(uid) {
+    return {
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        method: 'POST',
+        json: {
+            recipient: {
+                id: uid
+            }
+        },
+        qs: {
+            access_token: process.env.PAGE_ACCESS_TOKEN
+        }
+    };
+}
+
+function _sender_action(uid, sender_action) {
+    // Create options object
+    let options = _getBaseOptions(uid);
+    options.json.sender_action = sender_action;
+
+    // Send current message
+    request(options, function (error, response, body) {
+        if (error) {
+            // Some error occured
+            console.error('Error sending messages');
+        } else if (response.body.error) {
+            // Some error occured
+            console.error('Error: ', response.body.error);
+        } else {
+            console.log('Sender action ' + sender_action + 'executed for user: ' + uid);
+        }
+    });
+}
+
+function startTyping(uid) {
+    _sender_action(uid, 'typing_on');
+}
+
+function stopTyping(uid) {
+    _sender_action(uid, 'typing_on');
+}
+
+function syncText(uid, messages, callback, index = 0) {
 
     if (index < messages.length) {
 
-        let options = {
-            uri: 'https://graph.facebook.com/v2.6/me/messages',
-            method: 'POST',
-            json: {
-                messaging_type: 'RESPONSE',
-                recipient: {
-                    id: uid
-                },
-                message: {
-                    text: messages[index]
-                }
-            },
-            qs: {
-                access_token: process.env.PAGE_ACCESS_TOKEN
-            }
+        // Create options object
+        let options = _getBaseOptions(uid);
+        options.json.messaging_type = 'RESPONSE';
+        options.json.message = {
+            text: messages[index]
         };
 
         // Send current message
@@ -34,17 +66,25 @@ function syncText(uid, messages, index = 0) {
             } else {
                 console.log('Message sent!');
 
-                // Send next message with a delay of 2 seconds
-                setTimeout(() => {
-                    syncText(uid, messages, index + 1);
-                }, 2000);
+                if (index + 1 < messages.length) {
+                    // Send next message with a delay of 0.75 seconds
+                    setTimeout(() => {
+                        syncText(uid, messages, callback, index + 1);
+                    }, 750);
+                } else {
+                    // All messages were sent
+                    callback();
+                }
             }
         });
     } else {
-        return;
+        // Code only gets here if no message was received
+        callback();
     }
 }
 
 module.exports = {
+    startTyping,
+    stopTyping,
     syncText
 }
