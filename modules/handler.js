@@ -25,6 +25,9 @@ function handleMessage(uid, message) {
 
     Promise.all(answers).then((messages) => {
 
+        // Flattern messages' array
+        messages = [].concat.apply([], messages)
+
         console.log(messages)
         sender.syncText(messages)
     });
