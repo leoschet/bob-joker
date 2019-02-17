@@ -70,17 +70,13 @@ function syncText(uid, messages, callback, index = 0) {
             } else {
                 console.log('Message sent!');
 
-                if (index + 1 < messages.length) {
-                    // Send next message with a delay of 0.75 seconds
+                // Make sure to start typing before sending message
+                startTyping(uid, () => {
+                    // Send next message with a delay of 1.25 seconds
                     setTimeout(() => {
                         syncText(uid, messages, callback, index + 1);
-                    }, 750);
-                } else {
-                    // All messages were sent
-                    if (callback) {
-                        callback();
-                    }
-                }
+                    }, 1250);
+                });
             }
         });
     } else {

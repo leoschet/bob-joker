@@ -13,7 +13,7 @@ function handleMessage(uid, message) {
     // Get session for current user
     let session = sessions.getUserSession(uid);
 
-    // Start typing
+    // Start typing before even start message processing
     sender.startTyping(uid, () => {
 
         // Process incoming message, extracting found contexts
