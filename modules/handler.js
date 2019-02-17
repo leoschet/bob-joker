@@ -29,7 +29,7 @@ function handleMessage(uid, message) {
         messages = [].concat.apply([], messages)
 
         console.log(messages)
-        sender.syncText(messages)
+        sender.syncText(uid, messages)
     });
 }
 
